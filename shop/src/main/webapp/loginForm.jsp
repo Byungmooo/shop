@@ -10,7 +10,7 @@
    <div>
       <form id="customerForm" method="post" action="<%=request.getContextPath()%>/customerLoginAction.jsp">
          <fieldset>
-            <legend>쇼핑몰 고객 로그인</legend>
+            <legend>쇼핑몰 고객 로그인d</legend>
             <table border="1">
                <tr>
                   <td>ID</td>
