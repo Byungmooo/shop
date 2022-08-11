@@ -16,13 +16,21 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<%=session.getAttribute("user")%><!-- customer / employee -->
+ <fieldset>
+ <h1>회원 정보</h1>
+ 	<table>
+		<h2><%=session.getAttribute("user")%></h2><!-- customer / employee -->
+		<hr>
+		<p><%=session.getAttribute("name")%> 님 반갑습니다!</p><!-- 로그인 이름  -->
+		<hr>
+		<p>LoginID : <%=session.getAttribute("id")%></p><!-- 로그인 아이디 -->
+		<hr>
+
 	<br>
-	<%=session.getAttribute("id")%><!-- 로그인 아이디 -->
-	<br>
-	<%=session.getAttribute("name")%><!-- 로그인 이름  -->
-	<br>
-	<a href="<%=request.getContextPath()%>/logout.jsp">로그아웃</a>
-	
+	</table>
+	<a href="<%=request.getContextPath()%>/logout.jsp"><button>로그아웃</button></a>
+	<a href="<%=request.getContextPath()%>/removeIdForm.jsp"><button>회원 탈퇴</button></a>
+	<a href="<%=request.getContextPath()%>/admin/adminIndex.jsp"><button>관리자페이지</button></a>
+</fieldset>
 </body>
 </html>

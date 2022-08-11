@@ -1,53 +1,99 @@
-package model;
+package repository;
 
-import vo.*;
+import vo.Customer;
 import java.sql.*;
-
 
 public class CustomerDao {
 
-	   //customer 로그인
-	   public Customer Customerlogin(Customer customer)  throws SQLException,Exception {
-		   
-		   Customer customerLogin = null;
-		    DBUtil dbUtil = new DBUtil();
-		    
-		    String sql ="SELECT customer_id customerId, customer_pass customerPass, customer_name customerName FROM customer where customer_id=? and customer_pass=PASSWORD(?)";
-			Connection conn = null;
-			PreparedStatement stmt = null;
-			ResultSet rs = null;
-			
-			try {
-			
-			conn = dbUtil.getConnection();System.out.println("db연동");
+	// 가입
+	// CustomerService.addCustomer 가 호출
+	public int insertCustomer(Connection conn, Customer paraCustomer) throws SQLException {
+		int row = 0;
+		String sql = "INSERT INTO customer (customer_id, customer_pass, customer_name, customer_address, customer_telephone, update_date, create_date) VALUES (?, PASSWORD(?), ?, ?, PASSWORD(?), now(), now())";
+		PreparedStatement stmt = null;
+
+		try {
 			stmt = conn.prepareStatement(sql);
-			
-			stmt.setString(1, customer.getCustomerId());
-			stmt.setString(2, customer.getCustomerPass());
-			System.out.println(stmt + "<<stmt");
+			stmt.setString(1, paraCustomer.getCustomerId());
+			stmt.setString(2, paraCustomer.getCustomerPass());
+			stmt.setString(3, paraCustomer.getCustomerName());
+			stmt.setString(4, paraCustomer.getCustomerAddress());
+			stmt.setString(5, paraCustomer.getCustomerTelephone());
+
+			row = stmt.executeUpdate();
+		} finally {
+			if (stmt != null) {
+				stmt.close();
+			}
+		}
+		return row;
+	}
+
+	// 탈퇴
+	// CustomerService.removeCustomer(Customer paramCustomer)가 호출
+	public int removeCustomer(Connection conn, Customer paramCustomer) throws Exception {
+		// 동일한 conn
+		// conn.close() X
+		int row = 0;
+
+		String sql = "DELETE FROM customer WHERE customer_id= ? AND customer_pass = PASSWORD(?)";
+
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, paramCustomer.getCustomerId());
+			stmt.setString(2, paramCustomer.getCustomerPass());
+			row = stmt.executeUpdate();
+
+		} finally {
+			stmt.close();
+		}
+
+		return row;
+	}
+
+	// CustomerService가 호출
+	public Customer selectCustomerByidAndPw(Connection conn, Customer paramCustomer) throws Exception {
+
+		String sql = "SELECT customer_id , customer_pass, customer_name, customer_address, customer_telephone , update_date , create_date FROM customer WHERE customer_id=? AND customer_pass = PASSWORD(?)";
+
+		Customer loginCustomer = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, paramCustomer.getCustomerId());
+			stmt.setString(2, paramCustomer.getCustomerPass());
 			rs = stmt.executeQuery();
-			
-			if(rs.next()) {
-				System.out.println(rs + "<<rs");
-				customerLogin = new Customer();
-				customerLogin.setCustomerId(rs.getString("customerId"));
-				customerLogin.setCustomerName(rs.getString("customerName"));
-				
-				//
-				// 디버깅
-				System.out.println("login id : " + customerLogin.getCustomerId());
-				System.out.println("login name : " + customerLogin.getCustomerName());
+
+			if (rs.next()) {
+				loginCustomer = new Customer();
+				loginCustomer.setCustomerId(rs.getString("customer_id"));
+				loginCustomer.setCustomerPass(rs.getString("customer_pass"));
+				loginCustomer.setCustomerName(rs.getString("customer_name"));
+				loginCustomer.setCustomerAddress(rs.getString("customer_address"));
+				loginCustomer.setCustomerTelephone(rs.getString("customer_telephone"));
+				loginCustomer.setCreateDate(rs.getString("update_date"));
+				loginCustomer.setUpdateDate(rs.getString("create_date"));
 			}
-			}finally {
-				if(rs!=null) {
-					rs.close();
-				}if(stmt!=null) {
-					stmt.close();
-				}if(conn!=null) {
-					conn.close();
-				}
+
+			System.out.println(loginCustomer.getCustomerId());
+			System.out.println(loginCustomer.getCustomerPass());
+
+		} finally {
+			if (rs != null) {
+				rs.close();
 			}
-	      return customerLogin;
-	   }
-	
+			if (stmt != null) {
+				stmt.close();
+			}
+
+		}
+
+		return loginCustomer;
+
+	}
+
 }

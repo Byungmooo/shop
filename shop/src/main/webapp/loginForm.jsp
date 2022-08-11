@@ -10,7 +10,7 @@
    <div>
       <form id="customerForm" method="post" action="<%=request.getContextPath()%>/customerLoginAction.jsp">
          <fieldset>
-            <legend>쇼핑몰 고객 로그인d</legend>
+            <legend>쇼핑몰 고객 로그인</legend>
             <table border="1">
                <tr>
                   <td>ID</td>
@@ -21,7 +21,9 @@
                   <td><input type="password" name="customerPass" id="customerPass"></td>
                </tr>
             </table>
+            <hr>
             <button type="button" id="customerBtn">고객 로그인</button>
+			 <a href="<%=request.getContextPath()%>/addCustomer.jsp"><button type="button">회원가입</button></a>
          </fieldset>
       </form>
    </div>
@@ -40,7 +42,9 @@
                   <td><input type="password" name="employeePass" id="employeePass"></td>
                </tr>
             </table>
+            <hr>
             <button type="button" id="employeeBtn">스텝 로그인</button>
+            <a href="<%=request.getContextPath()%>/addEmployee.jsp"><button type="button">회원가입</button></a>
          </fieldset>
       </form>
    </div>

@@ -1,0 +1,133 @@
+package service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import repository.CustomerDao;
+import repository.OutIdDao;
+import vo.Customer;
+
+public class CustomerService {
+	
+	
+	
+	
+	
+	
+	//addCustmoerAction에서 호출되는 메서드
+	public boolean addCustomer(Customer paramCustomer) {
+		boolean result = true;
+		Connection conn = null;
+		
+		try {
+			conn = new DBUtil().getConnection();
+			conn.setAutoCommit(false); // executeUpdate() 실행 시 자동 커밋을 막음
+			
+			CustomerDao customerDao = new CustomerDao(); 
+			if(customerDao.insertCustomer(conn, paramCustomer) != 1) { // 쿼리문이 정상적으로 적용되었는지 확인 후 아닐 시 예외처리
+				result = false;
+				throw new Exception();
+			}			
+			conn.commit();		
+		} catch (Exception e) {
+			e.printStackTrace(); // console에 예외메세지 출력
+			try {
+				conn.rollback(); // 예외를 던지지말고 감싸야함
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	
+	
+
+	// 회원탈퇴 액션페이지에서 호출되는 메서드
+	public boolean removeCustomer(Customer paramCustomer) {
+		Connection conn = null;
+		
+		try {
+			conn = new DBUtil().getConnection();
+			conn.setAutoCommit(false); // executeUpdate()실행시 자동 커밋을 막음
+			
+			CustomerDao customerDao = new CustomerDao();
+			int Dlow = customerDao.removeCustomer(conn, paramCustomer);
+			
+			//디버그
+			if(Dlow != 1) {
+				System.out.println("delete 실패");
+				throw new Exception();
+			} else {
+				System.out.println("delete 성공");
+			}
+			
+			
+			OutIdDao OutIdDao = new OutIdDao();
+			int Ilow = OutIdDao.insertOutId(conn, paramCustomer.getCustomerId());
+			//디버그
+			if(Ilow != 1) {
+				System.out.println("insert 실패");
+				throw new Exception();
+			} else {
+				System.out.println("insert 성공");
+			}
+			
+			
+			conn.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace(); // console에 예외메세지 출력
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			return false; // 실패
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true; // 성공
+	}
+	
+	
+	//로그인 후 id, name LogionAction 호출
+	public Customer getCustomerByidAndPw(Customer paramCustomer) throws Exception {
+		// 객체 초기화
+		Connection conn = null;
+		Customer customer = null;
+		
+		try {
+			// conn 메서드실행할 객체생성
+			DBUtil dbUtil = new DBUtil();
+			conn = dbUtil.getConnection();
+			
+			CustomerDao customerDao = new CustomerDao();
+			customer = customerDao.selectCustomerByidAndPw(conn, paramCustomer);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return customer;
+	}
+	
+
+	
+}
