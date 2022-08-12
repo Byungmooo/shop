@@ -13,7 +13,7 @@
       currentPage = Integer.parseInt(request.getParameter("currentPage"));
    }
    
-   CustomerService customerService = new CustomerService();
+   GoodsService customerService = new GoodsService();
    // list
    List<Map<String, Object>> list = customerService.getCustomerGoodsListByPage(rowPerPage, currentPage); 
 %>

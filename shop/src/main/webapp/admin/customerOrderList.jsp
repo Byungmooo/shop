@@ -5,18 +5,20 @@
 <%
 	request.setCharacterEncoding("utf-8");
 
-	if (session.getAttribute("user") == null && session.getAttribute("active").equals("Y")) {
+	if (session.getAttribute("user") == null && session.getAttribute("active").equals("Y") || request.getParameter("customerId") == null) {
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 		System.out.println("없음");
 		return;
 	}	
 
-	// 현재 페이지
+	// 파라미터
+	String customerId = request.getParameter("customerId");
 	int currentPage = 1;
 	int lastPage;
 	if (request.getParameter("currentPage") != null) {
 		currentPage = Integer.parseInt(request.getParameter("currentPage"));
 	}
+	System.out.print(customerId + " <-- customerId");
 	
 	// 화면에 띄울 페이지수
 	final int ROW_PER_PAGE = 10;
@@ -25,8 +27,11 @@
 	OrdersService ordersService = new OrdersService();
 	List<Map<String, Object>> list = new ArrayList<>();
 	
-	list = ordersService.getOrdersList(ROW_PER_PAGE, currentPage);
+	list = ordersService.getOrdersListByCustomer(customerId, ROW_PER_PAGE, currentPage);
 	// lastPage = goodsService.getGoodsLastPage(ROW_PER_PAGE);
+	
+	// 주문자 이름
+	String name = list.get(0).get("customerName").toString();
 	
 	// 페이지 번호에 필요한 변수 계산
 	// int startPage = ((currentPage - 1) / ROW_PER_PAGE) * ROW_PER_PAGE + 1;
@@ -37,6 +42,7 @@
 		response.sendRedirect(request.getContextPath() + "/admin/adminIndex.jsp");
 		return;
 	}
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -45,32 +51,31 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<div >
-		<div >
-			<h3>ORDER</h3>
-		</div>
-	<hr>
 	<div>
-		<a href="<%=request.getContextPath()%>/admin/adminIndex.jsp"><button>홈으로</button></a>
-		<!-- index -->
-		<a href="<%=request.getContextPath()%>/admin/employeeList.jsp"><button>사원관리</button></a>
-
-		<a href="<%=request.getContextPath()%>/admin/adminGoodsList.jsp"><button>상품관리</button></a>
-		<!-- 상품목록 / 동록 / 수정(품절) / 삭제(장바구니, 주문이 없는 경우) -->
-
-		<a href="<%=request.getContextPath()%>/admin/adminCustomerList.jsp"><button>고객관리</button></a>
-		<!-- 고객목록 / 강제탈퇴 / 비번수정(전달구현 x) -->
-
-		<a href="<%=request.getContextPath()%>/admin/adminOrderList.jsp"><button>주문관리</button></a>
-		<!-- 주문목록 / 수정 -->
-
-		<a href="<%=request.getContextPath()%>/admin/adminNoticeList.jsp"><button>공지관리</button></a>
-		<!-- 공지 CRUD -->
-		<a href="<%=request.getContextPath()%>/logout.jsp"><button>로그아웃</button></a>
-		<!-- 로그아웃 -->
-	</div>
-	<hr>
-		<div >	
+		<div>
+			<h3>ORDER - <%=name%> 님의 주문내역</h3>
+		</div>
+				<hr>
+				<div>
+					<a href="<%=request.getContextPath()%>/admin/adminIndex.jsp"><button>홈으로</button></a>
+					<!-- index -->
+					<a href="<%=request.getContextPath()%>/admin/employeeList.jsp"><button>사원관리</button></a>
+			
+					<a href="<%=request.getContextPath()%>/admin/adminGoodsList.jsp"><button>상품관리</button></a>
+					<!-- 상품목록 / 동록 / 수정(품절) / 삭제(장바구니, 주문이 없는 경우) -->
+			
+					<a href="<%=request.getContextPath()%>/admin/adminCustomerList.jsp"><button>고객관리</button></a>
+					<!-- 고객목록 / 강제탈퇴 / 비번수정(전달구현 x) -->
+			
+					<a href="<%=request.getContextPath()%>/admin/adminOrderList.jsp"><button>주문관리</button></a>
+					<!-- 주문목록 / 수정 -->
+			
+					<a href="<%=request.getContextPath()%>/admin/adminNoticeList.jsp"><button>공지관리</button></a>
+					<!-- 공지 CRUD -->
+					<a href="<%=request.getContextPath()%>/logout.jsp"><button>로그아웃</button></a>
+					<!-- 로그아웃 -->
+				</div>
+				<hr>		
 			<div >
 				<table border="1">
 					<thead>
@@ -89,31 +94,31 @@
 						for(Map<String, Object> m : list) {
 					%>
 							<tr>
-								<td><a href="<%=request.getContextPath()%>/admin/ordersOne.jsp?ordersNo=<%=m.get("orderNo")%>"><%=m.get("orderNo")%></a></td>
-								<td><a href="<%=request.getContextPath()%>/admin/customerOrderList.jsp?customerId=<%=m.get("customerId")%>"><%=m.get("customerId")%></a></td>
+								<td><a href="<%=request.getContextPath()%>/admin/ordersOne.jsp?ordersNo=<%=m.get("ordersNo")%>"><%=m.get("ordersNo")%></a></td>
+								<td><%=m.get("customerId")%></td>
 								<td><%=m.get("goodsName")%></td>
 								<td><%=m.get("orderPrice")%></td>
 								<td><%=m.get("orderAddr")%></td>
 								<td>
 									<form action="<%=request.getContextPath()%>/admin/updateOrdersStateAction.jsp" method="post">
 										<input type="hidden" name="orderNo" value="<%=m.get("orderNo")%>">
-										<select name="orderState">
+										<select name="ordersState">
 											<%
-												if(m.get("orderState").equals("입금전")) {
+												if(m.get("ordersState").equals("입금전")) {
 											%>
 													<option value="입금전" selected="selected">입금전</option>
 													<option value="배송준비중">배송준비중</option>
 													<option value="배송중">배송중</option>
 													<option value="배송완료">배송완료</option>
 											<%
-												} else if(m.get("orderState").equals("배송준비중")) {
+												} else if(m.get("ordersState").equals("배송준비중")) {
 											%>
 													<option value="입금전">입금전</option>
 													<option value="배송준비중" selected="selected">배송준비중</option>
 													<option value="배송중">배송중</option>
 													<option value="배송완료">배송완료</option>
 											<%
-												} else if(m.get("orderState").equals("배송중")) {
+												} else if(m.get("ordersState").equals("배송중")) {
 											%>
 													<option value="입금전">입금전</option>
 													<option value="배송준비중">배송준비중</option>
@@ -143,7 +148,7 @@
 		</div>
 		<div>
 			<!-- <input type="text"> -->
-			<a href="<%=request.getContextPath()%>/admin/addGoodsForm.jsp" ><button>INSERT</button></a>
+			<a href="<%=request.getContextPath()%>/admin/addGoodsForm.jsp">INSERT</a>
 		</div>
 		
 		<%-- <div>
@@ -179,6 +184,5 @@
 				%>
 			</ul>
 		</div> --%>
-	</div>
 </body>
 </html>
