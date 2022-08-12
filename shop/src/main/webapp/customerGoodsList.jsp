@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import = "service.CustomerService"%>
+<%@ page import = "service.*"%>
 <%@ page import = "java.util.*" %>
 <%
    // Controller : java class <- Serlvet 
@@ -13,9 +13,9 @@
       currentPage = Integer.parseInt(request.getParameter("currentPage"));
    }
    
-   GoodsService customerService = new GoodsService();
+   GoodsService goodsService = new GoodsService();
    // list
-   List<Map<String, Object>> list = customerService.getCustomerGoodsListByPage(rowPerPage, currentPage); 
+   List<Map<String, Object>> list = goodsService.getCustomerGoodsListByPage(rowPerPage, currentPage); 
 %>
 
 <!--  분리하면 servlet / 연결기술 forword(request, resopnse) / jsp -->

@@ -2,17 +2,17 @@ package vo;
 
 public class GoodsImg {
 	
-	private int goodsNo;
+	private int goodsImgNo;
 	private String filename;
 	private String originFilename;
 	private String contentType;
 	private String createDate;
 	
-	public int getGoodsNo() {
-		return goodsNo;
+	public int getGoodsImgNo() {
+		return goodsImgNo;
 	}
-	public void setGoodsNo(int goodsNo) {
-		this.goodsNo = goodsNo;
+	public void setGoodsImgNo(int goodsNo) {
+		this.goodsImgNo = goodsNo;
 	}
 	public String getFilename() {
 		return filename;

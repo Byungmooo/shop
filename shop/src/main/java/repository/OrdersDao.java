@@ -12,6 +12,61 @@ import vo.Orders;
 
 public class OrdersDao {
 	
+	// 주문리스트 마지막페이지
+		public int selectOrdersLastPageByCustomer(Connection conn, String customerId, int rowPerPage) throws SQLException {
+			int totalCount = 0;
+			String sql = "SELECT COUNT(*) FROM orders WHERE customer_id = ?";
+			
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			
+			try {
+				stmt = conn.prepareStatement(sql);
+				stmt.setString(1, customerId);
+				rs = stmt.executeQuery();
+
+				if (rs.next()) {
+					totalCount = rs.getInt("COUNT(*)");
+				}
+			} finally {
+				if(rs != null) {
+					rs.close();
+				}
+				if(stmt != null) {
+					stmt.close();
+				}
+			}
+			
+			return totalCount;
+		}
+		
+		// 주문리스트 마지막페이지
+		public int selectOrdersLastPage(Connection conn, int rowPerPage) throws SQLException {
+			int totalCount = 0;
+			String sql = "SELECT COUNT(*) FROM orders";
+			
+			PreparedStatement stmt = null;
+			ResultSet rs = null;
+			
+			try {
+				stmt = conn.prepareStatement(sql);
+				rs = stmt.executeQuery();
+
+				if (rs.next()) {
+					totalCount = rs.getInt("COUNT(*)");
+				}
+			} finally {
+				if(rs != null) {
+					rs.close();
+				}
+				if(stmt != null) {
+					stmt.close();
+				}
+			}
+			
+			return totalCount;
+		}
+		
 	// 배송상태변경
 		public int updateOrdersState(Connection conn, Orders order) throws SQLException {
 			int row = 0;
@@ -35,14 +90,14 @@ public class OrdersDao {
 	
 	
 	// 주문 상세보기
-		public Map<String, Object> selectOrdersOne(Connection conn, int ordersNo) throws SQLException {
+		public Map<String, Object> selectOrdersOne(Connection conn, int orderNo) throws SQLException {
 			Map<String, Object> map = null;
 			
 			String sql = "SELECT o.order_no orderNo, o.customer_id customerId, o.order_quantity orderQuantity"
 					+ ", o.order_price orderPrice, o.order_addr orderAddr, o.order_state orderState"
 					+ ", o.update_date updateDate, o.create_date createDate"
 					+ ", g.goods_no goodsNo, g.goods_name goodsName, g.goods_price goodsPrice"
-					+ " FROM orders o INNER JOIN goods g ON o.goods_no = g.goods_no WHERE o.orders_no = ?";		
+					+ " FROM orders o INNER JOIN goods g ON o.goods_no = g.goods_no WHERE o.order_no = ?";		
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
 			
@@ -50,7 +105,7 @@ public class OrdersDao {
 				map = new HashMap<String, Object>();
 				
 				stmt = conn.prepareStatement(sql);
-				stmt.setInt(1, ordersNo);
+				stmt.setInt(1, orderNo);
 				
 				rs = stmt.executeQuery();
 				

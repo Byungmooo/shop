@@ -94,7 +94,7 @@
 						for(Map<String, Object> m : list) {
 					%>
 							<tr>
-								<td><a href="<%=request.getContextPath()%>/admin/ordersOne.jsp?ordersNo=<%=m.get("ordersNo")%>"><%=m.get("ordersNo")%></a></td>
+								<td><a href="<%=request.getContextPath()%>/admin/ordersOne.jsp?orderNo=<%=m.get("ordersNo")%>"><%=m.get("ordersNo")%></a></td>
 								<td><%=m.get("customerId")%></td>
 								<td><%=m.get("goodsName")%></td>
 								<td><%=m.get("orderPrice")%></td>
