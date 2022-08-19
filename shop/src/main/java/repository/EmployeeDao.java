@@ -7,6 +7,38 @@ import java.util.List;
 
 public class EmployeeDao {
 
+	
+	
+	
+	//// lastPage
+	// EmployeeService.lastPage()가 호출
+	public int allCount(Connection conn) throws Exception {
+		int allCount = 0;
+		String sql = "SELECT COUNT(*) count FROM employee";
+		
+		// 초기화
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			// 쿼리담기
+			stmt = conn.prepareStatement(sql);
+			// 디버깅
+			System.out.println("EmployeeDao lastPage stmt : " + stmt);
+			// 쿼리실행
+			rs = stmt.executeQuery();
+			if(rs.next()) {
+				allCount = rs.getInt("count");
+			}
+		} finally {
+			if(rs != null) { rs.close(); }
+			if(stmt != null) { stmt.close(); }
+		}
+				
+		return allCount;
+	}
+	
+	
 	// 사원 active 변경
 	public int updateEmployeeActive(Connection conn, Employee employee) throws SQLException {
 		int row = 0;
@@ -66,7 +98,7 @@ public class EmployeeDao {
 	// CustomerService.addCustomer 가 호출
 	public int insertEmployee(Connection conn, Employee paraEmployee) throws SQLException {
 		int row = 0;
-		String sql = "INSERT INTO customer (employee_id, employee_pass, employee_name, update_date, create_date) VALUES (?, PASSWORD(?), now(), now())";
+		String sql = "INSERT INTO employee (employee_id, employee_pass, employee_name, update_date, create_date) VALUES (?, PASSWORD(?), ? , now(), now())";
 		PreparedStatement stmt = null;
 
 		try {

@@ -14,75 +14,75 @@ public class GoodsService {
 	private GoodsDao goodsDao; // 디커풀링으로 인한 의존도를 낮춰 연결하는 방법
 	private GoodsImgDao goodsImgDao;
 	
-	////////////////////////BEGINROW 수정
-	public List<Map<String, Object>> getCustomerGoodsListByPage(int rowPerPage, int currentPage) {
-		List<Map<String, Object>> list = null;
-		Connection conn = null;
-		try {
-			conn = new DBUtil().getConnection();
-			conn.setAutoCommit(false);
-			
-			goodsDao = new GoodsDao();
-			list = goodsDao.selectCustomerGoodsListByPage(conn, rowPerPage, currentPage);
-			
-			if(list == null) {
-				throw new Exception();
-			}
-			conn.commit();		
-		} catch (Exception e) {
-			e.printStackTrace();
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return list;
-	}
+//	////////////////////////BEGINROW 수정
+//	public List<Map<String, Object>> getCustomerGoodsListByPage(int rowPerPage, int currentPage) {
+//		List<Map<String, Object>> list = null;
+//		Connection conn = null;
+//		try {
+//			conn = new DBUtil().getConnection();
+//			conn.setAutoCommit(false);
+//			
+//			goodsDao = new GoodsDao();
+//			list = goodsDao.selectCustomerGoodsListByPage(conn, rowPerPage, currentPage);
+//			
+//			if(list == null) {
+//				throw new Exception();
+//			}
+//			conn.commit();		
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			try {
+//				conn.rollback();
+//			} catch (SQLException e1) {
+//				e1.printStackTrace();
+//			}
+//		} finally {
+//			try {
+//				conn.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return list;
+//	}
 	
-	// 상품수정
-	public int modifyGoods(Goods goods, GoodsImg goodsImg) {
-		int row = 0;
-		
-		Connection conn = null;
-		try {
-			conn = new DBUtil().getConnection();
-			conn.setAutoCommit(false); // executeUpdate() 실행 시 자동 커밋을 막음
-			
-			goodsDao = new GoodsDao();
-			goodsImgDao = new GoodsImgDao();
-			
-			row = goodsDao.updateGoods(conn, goods);
-			
-			if(row != 0) {
-				row = goodsImgDao.updateGoodsImg(conn, goodsImg);
-				if(row == 0) {
-					throw new Exception();  // 이미지 입력실패시 강제로 롤백(catch절 이동)
-				}
-			}
-				
-			conn.commit();		
-		} catch (Exception e) {
-			e.printStackTrace(); // console에 예외메세지 출력
-			try {
-				conn.rollback(); // 예외를 던지지말고 감싸야함
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-		} finally {
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
+//	// 상품수정
+//	public int modifyGoods(Goods goods, GoodsImg goodsImg) {
+//		int row = 0;
+//		
+//		Connection conn = null;
+//		try {
+//			conn = new DBUtil().getConnection();
+//			conn.setAutoCommit(false); // executeUpdate() 실행 시 자동 커밋을 막음
+//			
+//			goodsDao = new GoodsDao();
+//			goodsImgDao = new GoodsImgDao();
+//			
+//			row = goodsDao.updateGoods(conn, goods);
+//			
+//			if(row != 0) {
+//				row = goodsImgDao.updateGoodsImg(conn, goodsImg);
+//				if(row == 0) {
+//					throw new Exception();  // 이미지 입력실패시 강제로 롤백(catch절 이동)
+//				}
+//			}
+//				
+//			conn.commit();		
+//		} catch (Exception e) {
+//			e.printStackTrace(); // console에 예외메세지 출력
+//			try {
+//				conn.rollback(); // 예외를 던지지말고 감싸야함
+//			} catch (SQLException e1) {
+//				e1.printStackTrace();
+//			}
+//		} finally {
+//			try {
+//				conn.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
 	
 	
 	// 상품 추가
@@ -109,7 +109,7 @@ public class GoodsService {
 				int goodsNo = goodsDao.insertGoods(conn, goods);
 
 				if (goodsNo != 0) { // insertGoods가 정상적으로 실행되었다면
-					goodsImg.setGoodsNo(goodsNo); // 리턴 받아온 key값을 goodsImg의 goodsNo로 셋팅
+					goodsImg.setGoodsImgNo(goodsNo); // 리턴 받아온 key값을 goodsImg의 goodsNo로 셋팅
 					row = goodsImgDao.insertGoodsImg(conn, goodsImg);
 					if (row == 0) { // 이미지입력 실패시
 						throw new Exception(); // catch절로 이동

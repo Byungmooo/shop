@@ -12,16 +12,31 @@ if (session.getAttribute("user") == null && session.getAttribute("active").equal
 	return;
 }
 
-// 페이징값
-int currentPage = 1;
-if (request.getParameter("currentPage") != null) {
-	currentPage = Integer.parseInt(request.getParameter("currentPage"));
-}
-final int ROW_PER_PAGE = 10;
+//페이징
+		int currentPage = 1; // 현재페이지
+		final int ROW_PER_PAGE = 10; // 묶음
 
-EmployeeService employeeService = new EmployeeService();
-List<Employee> list = new ArrayList<Employee>();
-list = employeeService.getEmployeeList(ROW_PER_PAGE, currentPage);
+		if(request.getParameter("currentPage") != null){
+			// 받아오는 페이지가 있다면 현재페이지변수에 담기
+			currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		}
+		
+		// 메서드를 위한 객체생성
+		EmployeeService employeeService = new EmployeeService();
+		
+		// 마지막페이지 구하는 메서드
+		int lastPage = employeeService.lastPage(ROW_PER_PAGE);
+		
+
+		// 숫자페이징
+		int startPage = ((currentPage - 1) / ROW_PER_PAGE) * ROW_PER_PAGE + 1; // 시작페이지값 ex) ROW_PER_PAGE 가 10 일경우 1, 11, 21, 31
+		int endPage = startPage + ROW_PER_PAGE - 1; // 끝페이지값 ex) ROW_PER_PAGE 가 10 일경우 10, 20, 30, 40
+		// endPage 는 lastPage보다 크면 안된다
+		endPage = Math.min(endPage, lastPage); // 두 값의 최소값이 endPage가 된다
+		
+		
+		// 리스트
+		List<Employee> list = employeeService.getEmployeeList(ROW_PER_PAGE, currentPage);
 %>
 <!DOCTYPE html>
 <html>
@@ -100,39 +115,46 @@ list = employeeService.getEmployeeList(ROW_PER_PAGE, currentPage);
 			
 		</table>
 	</div>
-	<!--  페이징 -->
-	<%-- <div>
-		<ul class="pagination pagination-sm">
-			<!-- 이전 -->
-			<%					
-
-					if(currentPage > 1) {
-			%>			
-					<li class="page-item"><a class="page-link"
-							href="./boardList.jsp?currentPage=<%=currentPage - 1%>">이전</a></li>
-			<%
-					}
-
-			%>
-			
-			<!-- 페이지 번호 -->
-			<%	
-			 	int pageCount = 10;
-				int startPage = ((currentPage - 1) / pageCount) * pageCount + 1;
-		    	int endPage = (((currentPage - 1) / pageCount) + 1) * pageCount;
-		    	if (lastPage < endPage) {
-       				endPage = lastPage;
-   				}
-		    	
-		    	if(currentPage < lastPage) {
-					%>								
-  					<li class="page-item"><a class="page-link"
-  							href="./boardList.jsp?currentPage=<%=i%>"><%=i%></a></li>
-  				<%
-  					}
-			%>
-		</ul>
-	</div> --%>
+				<div>
+				<table>
+                   <tr>
+                    <%
+	            		if(currentPage > 1){
+	            	%>
+		            		 <td>
+	                            <a href="<%=request.getContextPath()%>/admin/employeeList.jsp?currentPage=<%=currentPage-1%>">pre</a>
+	                         </td>	
+	            	<%
+	            		}
+                    	
+                    	// 숫자페이징
+                    	for(int i = startPage; i <= endPage; i++){
+                    		if(i == currentPage){
+		            %>
+		            			<td>
+		            				 <a href="<%=request.getContextPath()%>/admin/employeeList.jsp?currentPage=<%=i%>"><%=i%></a>
+		            			</td>
+	            	<%
+                    		} else {
+                	%>
+		            			<td>
+		            				 <a href="<%=request.getContextPath()%>/admin/employeeList.jsp?currentPage=<%=i%>"><%=i%></a>
+		            			</td>
+	            	<%			
+                    		}
+                    	}
+                    	
+	            		if(currentPage < lastPage){
+	            	%>
+	                        <td>
+	                            <a href="<%=request.getContextPath()%>/admin/employeeList.jsp?currentPage=<%=currentPage+1%>">Next</a>
+	                        </td>
+                    <%
+	            		}
+	            	%>
+                    </tr>
+                    </table>
+                </div>
 
 </body>
 </html>

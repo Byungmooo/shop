@@ -13,6 +13,66 @@ import vo.Employee;
 
 public class EmployeeService {
 	
+	////////////////////// lastPage
+	public int lastPage(final int rowPerPage) {
+		int lastPage = 0;
+		
+		// Connection 받을 변수 초기화
+		Connection conn = null;
+		try {
+			
+			// Connection 부를 객체생성
+			conn = new DBUtil().getConnection();
+			// getConnection메서드 실행
+
+			// 디버깅
+			System.out.println("EmployeeService.java lastPage conn : " + conn);
+			// 자동 commit 해제
+			conn.setAutoCommit(false);
+			
+			// EmployeeDao.selectEmployeeList 메서드실행 할 객체생성
+			EmployeeDao employeeDao = new EmployeeDao(); 
+			// 메서드실행
+			// 리턴값 받기
+			int allCount = employeeDao.allCount(conn);
+			
+			// 마지막페이지 구하기
+			lastPage = (int) Math.ceil (allCount / (double)rowPerPage);
+			
+			if(lastPage == 0) {
+				// lastPage가 없다면
+				throw new Exception();
+			}
+			
+			// 완료되었으면 commit
+			conn.commit();
+		} catch(Exception e) {
+			e.printStackTrace();
+			// 실패라면 rollback
+			try {
+				conn.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			// DB 자원해제
+			if(conn != null) {
+				try {
+					conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+			
+		return lastPage;
+	}	
+	
+	
+	
+	
+	
+	
 	// active update
 	public void modifyEmployeeActive(Employee employee) {
 		Connection conn = null;

@@ -15,6 +15,9 @@ import vo.Goods;
 
 public class GoodsDao {
 	
+	
+	
+	
 	// 고객 상품리스트 페이지에서 사용
 	public List<Map<String, Object>>customerGoodsListbypage(Connection conn, int rowPerpage, int beginRow) throws Exception{
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();

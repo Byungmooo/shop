@@ -2,13 +2,114 @@ package service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import repository.CustomerDao;
 import repository.OutIdDao;
+import repository.DBUtil;
 import vo.Customer;
 
 public class CustomerService {
+
+
+	//// lastPage
+	public int lastPage(final int rowPerPage) {
+		int lastPage = 0;
+		
+		// conn 초기화
+		Connection conn = null;
+		
+		try {
+			conn = new DBUtil().getConnection();
+			// 디버깅
+			System.out.println("CustomerService.java getCustomerList conn : " + conn);
+			// 자동 commit 해제
+			conn.setAutoCommit(false);
+			
+			// CustomerDao 객체 생성
+			CustomerDao customerDao = new CustomerDao();
+			
+			// selectCustomerList메서드 실행 값 변수에 받기
+			int allCount = customerDao.allCount(conn);
+			
+			// 마지막페이지 구하기
+			lastPage = (int) Math.ceil (allCount / (double)rowPerPage);
+			
+			if(lastPage == 0) {
+				// lastPage가 없다면
+				throw new Exception();
+			}
+			
+			// 완료되었으면 commit
+			conn.commit();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			// 실패라면 rollback
+			try {
+				conn.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			// DB 자원해제
+			if(conn != null) {
+				try {
+					conn.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+						
+		return lastPage;
+	}
 	
+	////////////////////////// getCustomerList
+	public List<Customer> getCustomerList(final int rowPerPage, final int currentPage) {
+
+		List<Customer> list = new ArrayList<Customer>();
+		
+		// Connection 받을 변수 초기화
+		Connection conn = null;
+		
+		int beginRow = (currentPage - 1) * rowPerPage;
+		
+		try {
+			// getConnection메서드 실행
+			conn = new DBUtil().getConnection();
+			// 디버깅
+			System.out.println("CustomerService.java getCustomerList conn : " + conn);
+			// 자동 commit 해제
+			conn.setAutoCommit(false);
+			
+			// CustomerDao 객체 생성
+			CustomerDao customerDao = new CustomerDao(); 
+			// selectCustomerList메서드 실행 값 변수에 받기
+			list = customerDao.selectCustomerList(conn, rowPerPage, beginRow);
+			
+			// 완료되었다면 commit
+			conn.commit();
+		} catch(Exception e) {
+			e.printStackTrace();
+			try {
+				conn.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			// DB 자원해제
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
 	
 	
 	
