@@ -88,7 +88,8 @@ public class GoodsDao {
 		Map<String, Object> map = null;
 		
 		String sql = "SELECT g.*, gi.* FROM goods g"
-				+ " INNER JOIN goods_img gi ON g.goods_no = gi.goods_no WHERE g.goods_no=?";
+				+ " INNER JOIN goods_img gi ON g.goods_no = gi.goods_no "
+				+ "WHERE g.goods_no=?";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		

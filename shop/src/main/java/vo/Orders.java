@@ -11,6 +11,7 @@ public class Orders {
 	private String updateDate;
 	private String createDate;
 	public int getOrderNo() {
+		
 		return orderNo;
 	}
 	public void setOrderNo(int orderNo) {

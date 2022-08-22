@@ -85,8 +85,6 @@ if (list == null) {
 								<a href="<%=request.getContextPath()%>/admin/GoodsOne.jsp?goodsNo=<%=g.getGoodsNo()%>">
 									<%=g.getGoodsName()%>
 							</a>
-							
-							
 							</td>
 							<td><%=g.getGoodsPrice()%>원</td>
 							<td><%=g.getCreateDate()%></td>
@@ -139,6 +137,5 @@ if (list == null) {
 			%>
 			<a href="<%=request.getContextPath()%>/admin/addGoodsForm.jsp" style = "margin:325px;"><button>상품추가</button></a>
 		</div>
-	</div>
 </body>
 </html>

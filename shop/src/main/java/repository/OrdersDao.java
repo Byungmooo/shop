@@ -12,6 +12,60 @@ import vo.Orders;
 
 public class OrdersDao {
 	
+	
+	//// updateOrderStateByOrderNo	
+	public int updateOrderStateByOrderNo(Connection conn, String orderState, int orderNo) throws Exception {
+		int row = 0;
+		String sql = "UPDATE orders SET order_state = ?, update_date = NOW() WHERE order_no = ?";
+		
+		// stmt 초기화
+		PreparedStatement stmt = null;
+		
+		try {
+			stmt = conn.prepareStatement(sql);
+			// stmt setter
+			stmt.setString(1, orderState);
+			stmt.setInt(2, orderNo);
+			// 디버깅
+			System.out.println("OrdersDao.java updateOrderStateByOrderNo stmt : " + stmt);
+			
+			// 쿼리 실행
+			row = stmt.executeUpdate();
+		} finally {
+			if(stmt != null) { stmt.close(); }
+		}
+		
+		return row;
+	}
+	
+	
+	///// allCount	
+	// 마지막페이지 구할 총 count
+	public int allCount(Connection conn) throws Exception {
+		int allCount = 0;
+		String sql = "SELECT COUNT(*) allCount FROM orders";
+		
+		// stmt, rs 초기화
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			stmt = conn.prepareStatement(sql);
+			// 디버깅
+			System.out.println("OrdersDao.java allCount stmt : " + stmt);
+			rs = stmt.executeQuery();
+			if(rs.next()) {
+				allCount = rs.getInt("allCount");
+			}
+		} finally {
+			if(rs != null) { rs.close(); }
+			if(stmt != null) { stmt.close(); }
+		}
+		
+		return allCount;
+	}
+
+	//// selectOrdersOne	
 	// 주문리스트 마지막페이지
 		public int selectOrdersLastPageByCustomer(Connection conn, String customerId, int rowPerPage) throws SQLException {
 			int totalCount = 0;
@@ -98,6 +152,14 @@ public class OrdersDao {
 					+ ", o.update_date updateDate, o.create_date createDate"
 					+ ", g.goods_no goodsNo, g.goods_name goodsName, g.goods_price goodsPrice"
 					+ " FROM orders o INNER JOIN goods g ON o.goods_no = g.goods_no WHERE o.order_no = ?";		
+			
+//			String sql = "SELECT o.order_no orderNo, o.goods_no goodsNo, o.customer_id customerId, o.order_quantity orderQuantity,"
+//					+ " o.order_price orderPrice, o.order_addr orderAddr, o.order_state orderState, "
+//					+ "o.update_date updateDate, o.create_date createDate, g.goods_name goodsName, "
+//					+ "c.customer_name customerName, c.customer_telephone customerTelephone "
+//					+ "FROM orders o INNER JOIN goods g ON o.goods_no = g.goods_no LEFT JOIN customer "
+//					+ "c ON o.customer_id = c.customer_id WHERE o.order_no = ?";
+			
 			PreparedStatement stmt = null;
 			ResultSet rs = null;
 			

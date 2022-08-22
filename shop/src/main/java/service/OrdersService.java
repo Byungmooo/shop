@@ -15,6 +15,96 @@ public class OrdersService {
 	
 	private OrdersDao ordersDao; // 디커풀링으로 인한 의존도를 낮춰 연결하는 방법
 	
+	
+	//// updateOrderStateByOrderNo	
+	public boolean modifyOrderStateByOrderNo(String orderState, int orderNo) {
+		// 리턴값 초기화
+		boolean result = false;
+				
+		// conn 초기화
+		Connection conn = null;
+		
+		// ordersDao 초기화;
+		this.ordersDao = new OrdersDao();
+		
+		try {
+			conn = new DBUtil().getConnection();
+			// 디버깅
+			System.out.println("OrdersService.java modifyOrderStateByOrderNo conn : " + conn);
+			
+			// 자동커밋해제
+			conn.setAutoCommit(false);
+						
+			// 메서드 실행 - row 0이면 update 안됨
+			int row = this.ordersDao.updateOrderStateByOrderNo(conn, orderState, orderNo);
+			// 디버깅
+			System.out.println("OrdersService.java modifyOrderStateByOrderNo row : " + row);
+			
+			// row == 0 실패 -> 익셉션발생
+			if(row == 0) {
+				System.out.println("OrdersService.java modifyOrderStateByOrderNo update 실패");
+				throw new Exception();
+			}
+			
+			// 성공할 경우 result = true
+			result = true;
+			// 그후 커밋
+			conn.commit();
+		} catch(Exception e) {
+			e.printStackTrace();
+			// 문제있을경우 롤백
+			try {
+				conn.rollback();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} finally {
+			// 자원해제
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	
+	////////////////// lastPage	
+	// 마지막페이지 구할 총 count
+	public int lastPage(final int rowPerPage) {
+		int lastPage = 0;
+		
+		// conn, dbUtil, ordersDao 초기화
+		Connection conn = null;
+		this.ordersDao = new OrdersDao();
+		
+		try {
+			conn = new DBUtil().getConnection();
+			int allCount = this.ordersDao.allCount(conn);
+			// 디버깅
+			System.out.println("OrdersService.java modifyOrderStateByOrderNo conn : " + conn);
+			System.out.println("OrdersService.java modifyOrderStateByOrderNo allCount : " + allCount);
+			
+			// 마지막페이지 구하기 식
+			lastPage = (int) Math.ceil(allCount / (double) rowPerPage);
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			// DB 자원해제
+			try {
+				conn.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return lastPage;
+	}
+	
+	
+	
 	// 고객별 주문 마지막 페이지
 	public int getOrdersLastPageByCustomer(String cusotmerId, int rowPerPage) {
 		int lastPage = 0;
@@ -107,7 +197,7 @@ public class OrdersService {
 			
 			list = new ArrayList<>();
 			
-			ordersDao = new OrdersDao();
+			this.ordersDao = new OrdersDao();
 			beginRow = (currentPage - 1) * rowPerPage;
 			
 			list = ordersDao.selectOrdersListByCustomer(conn, customerId, rowPerPage, beginRow);
@@ -183,7 +273,7 @@ public class OrdersService {
 			conn.setAutoCommit(false); // executeUpdate() 실행 시 자동 커밋을 막음
 			
 			map = new HashMap<>();			
-			ordersDao = new OrdersDao();
+			this.ordersDao = new OrdersDao();
 			
 			map = ordersDao.selectOrdersOne(conn, orderNo);
 			
@@ -221,7 +311,7 @@ public class OrdersService {
 			
 			list = new ArrayList<>();
 			
-			ordersDao = new OrdersDao();
+			this.ordersDao = new OrdersDao();
 			beginRow = (currentPage - 1) * rowPerPage;
 			
 			list = ordersDao.selectOrdersList(conn, rowPerPage, beginRow);
