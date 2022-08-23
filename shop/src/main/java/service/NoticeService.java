@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import repository.DBUtil;
+import repository.GoodsDao;
 import repository.NoticeDao;
+import repository.NoticeDao;
+import vo.Notice;
 import vo.Notice;
 
 
@@ -103,29 +106,30 @@ public class NoticeService {
 	
 	
 	
-	public Map<String, Object> getNoticeOne(int noticeNo){
+	public Map<String, Object> getNoticeOne(int noticeNo) {		
 		Connection conn = null;
 		Map<String, Object> map = null;
 		
 		try {
 			conn = new DBUtil().getConnection();
-			conn.setAutoCommit(false); //executeUpdate() 실행 시 자동 커밋 막음
+			conn.setAutoCommit(false); // executeUpdate() 실행 시 자동 커밋을 막음
 			
-			this.noticeDao = new NoticeDao();
-			map = noticeDao.selectNoticeOne(conn,noticeNo);
+			this.noticeDao = new NoticeDao();	
+			map = noticeDao.selectNoticeOne(conn, noticeNo);
 			
-			if(map == null) {
+			if(map == null) { // 쿼리문이 정상적으로 적용되었는지 확인 후 아닐 시 예외처리
 				throw new Exception();
-			}
-			conn.commit();
-		}catch (Exception e) {
-			e.printStackTrace();
+			} 
+			
+			conn.commit();		
+		} catch (Exception e) {
+			e.printStackTrace(); // console에 예외메세지 출력
 			try {
-				conn.rollback();
-			}catch (SQLException e1) {
+				conn.rollback(); // 예외를 던지지말고 감싸야함
+			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-		}finally {
+		} finally {
 			try {
 				conn.close();
 			} catch (SQLException e) {

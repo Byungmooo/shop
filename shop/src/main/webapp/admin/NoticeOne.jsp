@@ -71,19 +71,17 @@ if (map == null) {
 					</tr>
 					<tr>
 						<th>등록날짜</th>
-						<td><%=map.get("CreateDate")%></td>
+						<td><%=map.get("createDate")%></td>
 					</tr>
 					<tr>
 						<th>수정날짜</th>
-						<td><%=map.get("UpdateDate")%></td>
+						<td><%=map.get("updateDate")%></td>
 					</tr>
 				</table>
 			</div>
-			<hr>
-		<div>
 			<a href="<%=request.getContextPath()%>/"><button>UPDATE</button></a> 
 			<a href="<%=request.getContextPath()%>/"><button>DELETE</button></a>
 		</div>
-	</div>
+	
 </body>
 </html>

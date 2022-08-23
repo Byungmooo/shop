@@ -35,7 +35,14 @@ if (session.getAttribute("user") == null && session.getAttribute("active").equal
 		
 		
 		// 리스트
-		List<Notice> list = noticeService.getNoticeList(ROW_PER_PAGE, currentPage);
+		//List<Notice> list = noticeService.getNoticeList(ROW_PER_PAGE, currentPage);
+		
+		
+		List<Notice> list = new ArrayList<>();
+		
+		list = noticeService.getNoticeList(ROW_PER_PAGE, currentPage);	
+		
+		
 %>
 <!DOCTYPE html>
 <html>
@@ -69,7 +76,7 @@ if (session.getAttribute("user") == null && session.getAttribute("active").equal
 	</div>
 	<hr>
 		<div>
-<table border="1">
+			<table border="1">
 			<thead>
 				<tr>
 					<th>NoticeNo</th>
@@ -95,9 +102,9 @@ if (session.getAttribute("user") == null && session.getAttribute("active").equal
 				<%
 				}
 				%>
-			
-		</table>
-			</div>
+			</tbody>
+			</table>
+		</div>
 
 
 

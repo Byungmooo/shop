@@ -105,7 +105,7 @@ if (session.getAttribute("user") == null && session.getAttribute("active").equal
 								}
 								%>
 							</select>
-							<button type="submit" class="btn btn-dark">권한변경</button>
+							<button type="submit">권한변경</button>
 						</form>
 					</td>
 				</tr>

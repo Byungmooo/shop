@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import vo.Notice;
+import vo.Notice;
 
 public class NoticeDao {
 	
@@ -48,6 +49,8 @@ public class NoticeDao {
 				+ ", update_date updateDate, create_date createDate"
 				+ " FROM notice"
 				+ "WHERE notice_no = ?";
+				
+				
 		
 		
 		PreparedStatement stmt = null;
@@ -84,10 +87,9 @@ public class NoticeDao {
 		List<Notice> list = null;
 		Notice notice = null;
 
-		String sql = "SELECT notice_title noticeTitle, notice_content noticeContent, create_date createDate, update_date updateDate "
-					+ "FROM notice "
-					+ "ORDER BY create_date LIMIT ?, ?";
-		
+		String sql = "SELECT notice_no noticeNo, notice_title noticeTitle, "
+				+ "notice_content noticeContent, create_date createDate, update_date updateDate "
+				+ "FROM notice ORDER BY create_date LIMIT ?, ?";
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 
@@ -99,10 +101,11 @@ public class NoticeDao {
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				notice = new Notice();
-				notice.setNoticeTitle(rs.getString("noticeTitle"));
-				notice.setNoticeContent(rs.getString("noticeContent"));
+				notice.setNoticeNo(rs.getInt("NoticeNo"));
+				notice.setNoticeTitle(rs.getString("NoticeTitle"));
+				notice.setNoticeContent(rs.getString("NoticeContent"));
 				notice.setCreateDate(rs.getString("createDate"));
-				notice.setUpdateDate(rs.getString("updateDate"));
+				notice.setUpdateDate(rs.getString("UpdateDate"));
 				list.add(notice);
 			}
 		} finally {
@@ -116,4 +119,5 @@ public class NoticeDao {
 
 		return list;
 	}
+	
 }
