@@ -110,7 +110,9 @@ if (session.getAttribute("user") == null && session.getAttribute("active").equal
 
 	<hr>
 				<div>
+				<a href="<%=request.getContextPath()%>/admin/addNoticeForm.jsp" style = "margin:440px;"><button>글 쓰기</button></a>
 				<table>
+				
                    <tr>
                     <%
 	            		if(currentPage > 1){

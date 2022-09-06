@@ -44,6 +44,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 </head>
 <body>
 	<div>
@@ -52,9 +54,9 @@
 		</div>
 	<hr>
 	<div>
-		<a href="<%=request.getContextPath()%>/admin/adminIndex.jsp"><button>홈으로</button></a>
+		<a href="<%=request.getContextPath()%>/admin/adminIndex.jsp"  class="nav-link px-2 text-secondary"><button>홈으로</button></a>
 		<!-- index -->
-		<a href="<%=request.getContextPath()%>/admin/employeeList.jsp"><button>사원관리</button></a>
+		<a href="<%=request.getContextPath()%>/admin/employeeList.jsp"  class="nav-link px-2 text-secondary"><button>사원관리</button></a>
 
 		<a href="<%=request.getContextPath()%>/admin/adminGoodsList.jsp"><button>상품관리</button></a>
 		<!-- 상품목록 / 동록 / 수정(품절) / 삭제(장바구니, 주문이 없는 경우) -->
@@ -68,6 +70,8 @@
 		<a href="<%=request.getContextPath()%>/admin/adminNoticeList.jsp"><button>공지관리</button></a>
 		<!-- 공지 CRUD -->
 		<a href="<%=request.getContextPath()%>/logout.jsp"><button>로그아웃</button></a>
+		
+		
 		<!-- 로그아웃 -->
 	</div>
 	<hr>
@@ -155,4 +159,6 @@
 
 </div>
 </body>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
 </html>
